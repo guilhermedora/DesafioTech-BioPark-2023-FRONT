@@ -12,6 +12,13 @@
   margin-top: 24px;
 }
 
+.container-inputs-row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  margin-top: 24px;
+}
+
 .container-inputs label {
   color: #484848;
   font-family: 'Rubik', sans-serif;
