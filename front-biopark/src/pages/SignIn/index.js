@@ -26,7 +26,7 @@ function SignIn() {
       if (!email || !password) {
         return;
       }
-
+      console.log(email, password);
       const response = await api.post('/login', {
         email,
         senha: password

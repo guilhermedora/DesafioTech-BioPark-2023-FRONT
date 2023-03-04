@@ -94,7 +94,6 @@ function AddCadasterModal({ open, handleClose, setApartments }) {
         console.log(error.response);
       }
     }
-    /*     const [day, month, year] = form.date.split('/'); */
   }
 
   useEffect(() => {

@@ -1,0 +1,37 @@
+.container-chip {
+  background-color: #FAFAFA;
+  box-shadow: 0px 2px 11px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  font-size: 14px;
+  height: 30px;
+  width: 170px;
+  display: flex;
+  padding: 0 10px;
+  margin: 10px 10px 10px 0;
+  cursor: pointer;
+  font-weight: normal !important;
+}
+
+.container-chip span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.container-chip h3 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2px;
+  margin: 0px 0px 2px 5px;
+}
+
+.checked {
+  background-color: #f05959;
+  color: white;
+}
+
+.unchecked {
+  background-color: #FAFAFA;
+  color: black;
+}

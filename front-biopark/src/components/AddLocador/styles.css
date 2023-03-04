@@ -1,0 +1,28 @@
+.backdrop {
+  background: rgba(61, 61, 61, 0.48);
+  width: 100vw;
+  min-height: 100vh;
+  position: absolute;
+  padding: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container-options {
+  display: flex;
+  width: 100%;
+  color: white;
+}
+
+.option-edf {
+  background-color: rgb(26, 58, 118);
+}
+
+.option-ap {
+  background-color: #f05959;
+}
+
+.option-off {
+  background-color: #B9B9B9;
+}

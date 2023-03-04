@@ -1,17 +1,21 @@
 import { useEffect, useState } from 'react';
 import AddCadasterModal from '../../components/AddCadasterModal';
+import AddLocador from '../../components/AddLocador';
+import Filter from '../../components/Filter';
 import Header from '../../components/Header';
 import Table from '../../components/Table';
 import { loadApartments } from '../../utils/requisitions';
 import './styles.css';
 
 function Main() {
-  const [openModalAddCadaster, setOpenModalAddCadaster] = useState(false);
   const [setOpenModalProfile] = useState(false);
+  const [openModalAddCadaster, setOpenModalAddCadaster] = useState(false);
   const [apartments, setApartments] = useState([]);
-
+  const [openModalLocador, setOpenModalLocador] = useState(false);
+  const [apartmentClicked, setApartmentClicked] = useState({});
   useEffect(() => {
     setApartments([]);
+
     async function getAllApartments() {
       const allApartments = await loadApartments();
       console.log(allApartments, 'todos os apes');
@@ -32,8 +36,15 @@ function Main() {
         <div className='width-limit'>
           <div className='container-data'>
             <div className='container-left'>
-              <Table
+              <Filter
                 apartamentList={apartments}
+                setApartments={setApartments}
+              />
+              <Table
+                open={() => setOpenModalLocador(true)}
+                apartamentList={apartments}
+                setApartments={setApartments}
+                setApartmentClicked={setApartmentClicked}
               />
             </div>
             <div className='container-right'>
@@ -52,6 +63,13 @@ function Main() {
         open={openModalAddCadaster}
         handleClose={() => setOpenModalAddCadaster(false)}
         setApartments={setApartments}
+      />
+
+      <AddLocador
+        open={openModalLocador}
+        handleClose={() => setOpenModalLocador(false)}
+        setApartments={setApartments}
+        apartmentClicked={apartmentClicked}
       />
     </div>
   )

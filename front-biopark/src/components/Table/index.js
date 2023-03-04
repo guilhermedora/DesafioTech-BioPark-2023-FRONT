@@ -5,7 +5,10 @@ import { formatToMoney } from '../../utils/formatters';
 import './styles.css';
 
 function Table({
-  apartamentList
+  open,
+  apartamentList,
+  setApartments,
+  setApartmentClicked
 }) {
   const [asc, setAsc] = useState(true);
   const [orderedApartments, setOrderedApartments] = useState([]);
@@ -40,7 +43,13 @@ function Table({
 
       <div className='table-body'>
         {orderedApartments.map((apartment) => (
-          <div className='table-row' key={apartment.id}>
+          <div
+            className='table-row'
+            key={apartment.id}
+            onClick={() => {
+              open()
+              setApartmentClicked(apartment)
+            }}>
             <strong className='table-column-small content-number'>
               {apartment.numero}
             </strong>
@@ -65,7 +74,7 @@ function Table({
           </div>
         ))}
       </div>
-    </div>
+    </div >
   )
 }
 
