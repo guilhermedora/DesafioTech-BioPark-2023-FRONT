@@ -15,6 +15,7 @@
 
 .btn-filter {
   margin-right: 4px;
+  box-shadow: 0px 2px 11px rgba(0, 0, 0, 0.3) !important;
 }
 
 .filter-body {
@@ -51,4 +52,24 @@
   width: 130px;
   border-radius: 10px;
   margin-right: 16px;
+}
+
+.btn-filter:hover {
+  /* opacity: 0.9; */
+  transform: scale(1.01);
+  box-shadow: 0px 2px 11px rgba(0, 0, 0, 0.4) !important;
+}
+
+.btn-filter:active {
+  /* opacity: 1; */
+  transform: scale(0.99);
+}
+
+.container-btns-filter button:hover {
+  transform: scale(1.01);
+  box-shadow: 0px 2px 11px rgba(0, 0, 0, 0.2)
+}
+
+.container-btns-filter button:active {
+  transform: scale(0.99);
 }

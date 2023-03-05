@@ -76,3 +76,7 @@
 .right form button {
   margin-top: 52px;
 }
+
+.logo:hover {
+  opacity: 0.9;
+}

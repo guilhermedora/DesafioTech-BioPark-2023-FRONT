@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Link } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../assets/logo-second-form.svg';
 import api from '../../services/api';
 import { getItem, setItem } from '../../utils/storage';
 import './styles.css';
+import ButtonOpacity from '../../components/ButtonOpacity';
 
 function SignIn() {
   const navigate = useNavigate();
@@ -26,7 +27,6 @@ function SignIn() {
       if (!email || !password) {
         return;
       }
-      console.log(email, password);
       const response = await api.post('/login', {
         email,
         senha: password
@@ -43,13 +43,13 @@ function SignIn() {
     } catch (error) {
       console.log(error);
     }
-
-
   }
 
   return (
     <div className='container-sign-in'>
-      <img src={Logo} alt="logo" className='logo' />
+      <a href='https://biopark.com.br/sobre/'>
+        <img src={Logo} alt="logo" className='logo' />
+      </a>
 
       <div className='content-sign-in'>
         <div className='left'>
@@ -62,12 +62,13 @@ function SignIn() {
             você tem tudo num único lugar, há um clique de distância. ;)
           </h3>
 
-          <button
-            className='btn-red btn-big'
-            onClick={() => navigate('/sign-up')}
-          >
-            Cadastre-se
-          </button>
+          <ButtonOpacity
+            click={() => navigate('/sign-up')}
+            text={'Cadastre-se'}
+            atributeColor={'btn-red'}
+            atributeSize={'btn-big'}
+            atributeLarge={'btn-whidth-login'}
+          />
         </div>
         <div className='right'>
           <form onSubmit={handleSubmit}>
@@ -92,12 +93,13 @@ function SignIn() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-
-            <button
-              className='btn btn-red btn-big'
-            >
-              Entrar
-            </button>
+            <ButtonOpacity
+              click={handleSubmit}
+              text={'Entrar'}
+              atributeColor={'btn-red'}
+              atributeSize={'btn-big'}
+              atributeLarge={'btn-whidth-login'}
+            />
           </form>
         </div>
       </div>

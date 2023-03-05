@@ -3,6 +3,7 @@ import FilterIcon from '../../assets/filter-icon.svg';
 import { loadBuildings, loadApartments } from '../../utils/requisitions';
 import Chip from '../Chip';
 import './styles.css';
+import Grow from '@mui/material/Grow';
 
 function Filter({ apartmentList, setApartments }) {
     const [open, setOpen] = useState(false);
@@ -58,7 +59,6 @@ function Filter({ apartmentList, setApartments }) {
     useEffect(() => {
         async function getAllBuildings() {
             const allBuildings = await loadBuildings();
-            console.log(allBuildings);
             allBuildings.forEach(build => {
                 build.checked = false;
             });
@@ -83,41 +83,47 @@ function Filter({ apartmentList, setApartments }) {
             </button>
 
             {open &&
-                <div className='filter-body'>
-                    <strong>Categoria</strong>
+                <Grow
+                    in={open}
+                    style={{ transformOrigin: '0 0 0' }}
+                    {...(open ? { timeout: 500 } : {})}
+                >
+                    <div className='filter-body'>
+                        <strong>Edifícios</strong>
 
-                    <div className='container-categories' onClick={() => setFiltering(true)}>
-                        {buildings.map((build) => (
-                            <Chip
-                                key={build.id}
-                                checked={build.checked}
-                                title={build.edificio_nome}
-                                id={build.id}
-                                buildings={buildings}
-                                setBuildings={setBuildings}
-                            />
-                        ))}
-                    </div>
+                        <div className='container-categories' onClick={() => setFiltering(true)}>
+                            {buildings.map((build) => (
+                                <Chip
+                                    key={build.id}
+                                    checked={build.checked}
+                                    title={build.edificio_nome}
+                                    id={build.id}
+                                    buildings={buildings}
+                                    setBuildings={setBuildings}
+                                />
+                            ))}
+                        </div>
 
-                    <div className='container-btns-filter'>
-                        <button
-                            className='btn-white btn-extra-small'
-                            onClick={handleClearFilters}
-                        >
-                            Limpar Filtros
-                        </button>
-                        <button
-                            className={
-                                filtering
-                                    ? 'btn-red btn-extra-small'
-                                    : 'btn-white btn-extra-small'
-                            }
-                            onClick={handleApplyFilters}
-                        >
-                            Aplicar Filtros
-                        </button>
+                        <div className='container-btns-filter'>
+                            <button
+                                className='btn-white btn-extra-small'
+                                onClick={handleClearFilters}
+                            >
+                                Limpar Filtros
+                            </button>
+                            <button
+                                className={
+                                    filtering
+                                        ? 'btn-red btn-extra-small'
+                                        : 'btn-white btn-extra-small'
+                                }
+                                onClick={handleApplyFilters}
+                            >
+                                Aplicar Filtros
+                            </button>
+                        </div>
                     </div>
-                </div>
+                </Grow>
             }
 
         </div>

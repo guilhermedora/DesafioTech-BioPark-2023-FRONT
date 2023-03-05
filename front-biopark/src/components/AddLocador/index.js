@@ -5,7 +5,8 @@ import { loadBuildings } from '../../utils/requisitions';
 import { getItem } from '../../utils/storage';
 import './styles.css';
 import { formatToDate, formatPhone } from '../../utils/formatters'
-
+import ButtonOpacity from '../ButtonOpacity';
+import Zoom from '@mui/material/Zoom';
 const defaultForm = {
   name: '',
   email: '',
@@ -16,7 +17,7 @@ const defaultForm = {
 
 function AddLocador({ open, handleClose, setApartments, apartmentClicked }) {
   const token = getItem('token');
-  const [setBuildings] = useState([]);
+  // const [setBuildings] = useState([]);
   const [form, setForm] = useState({ ...defaultForm })
 
   function handleChangeForm({ target }) {
@@ -25,7 +26,6 @@ function AddLocador({ open, handleClose, setApartments, apartmentClicked }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log(form, apartmentClicked);
     try {
       await api.post('/contrato',
         {
@@ -44,89 +44,87 @@ function AddLocador({ open, handleClose, setApartments, apartmentClicked }) {
       );
       handleClose();
       setForm({ ...defaultForm });
+      document.location.reload(true)
     } catch (error) {
-      console.log(error.response);
     }
   }
-
-  useEffect(() => {
-    async function getBuildings() {
-      const allBuildings = await loadBuildings();
-      console.log(allBuildings);
-      setBuildings([...allBuildings]);
-    }
-    getBuildings();
-  }, []);
-
   return (
     <>
       {open &&
         <div className='backdrop'>
-          <div className='modal'>
-            <img
-              className='close-button'
-              src={CloseIcon}
-              alt="close-button"
-              onClick={handleClose}
-            />
-            <h2>Contrato de Aluguel</h2>
-            <form onSubmit={handleSubmit}>
-              <div className='container-inputs'>
-                <label>Nome</label>
-                <input
-                  name='name'
-                  type="text"
-                  value={form.name}
-                  onChange={handleChangeForm}
-                  required
+          <Zoom
+            in={open} style={{ transitionDelay: open ? '50ms' : '0ms' }}
+          >
+            <div className='modal'>
+              <img
+                className='close-button'
+                src={CloseIcon}
+                alt="close-button"
+                onClick={handleClose}
+              />
+              <h2>Contrato de Aluguel</h2>
+              <form onSubmit={handleSubmit}>
+                <div className='container-inputs'>
+                  <label>Nome</label>
+                  <input
+                    name='name'
+                    type="text"
+                    value={form.name}
+                    onChange={handleChangeForm}
+                    required
+                  />
+                </div>
+                <div className='container-inputs'>
+                  <label>E-mail</label>
+                  <input
+                    name='email'
+                    type="email"
+                    value={form.email}
+                    onChange={handleChangeForm}
+                    required
+                  />
+                </div>
+                <div className='container-inputs'>
+                  <label>Telefone</label>
+                  <input
+                    name='phone'
+                    type="text"
+                    value={formatPhone(form.phone)}
+                    onChange={handleChangeForm}
+                    required
+                  />
+                </div>
+                <div className='container-inputs'>
+                  <label>Data de Inicio</label>
+                  <input
+                    name='date'
+                    type="text"
+                    value={formatToDate(form.date)}
+                    onChange={handleChangeForm}
+                    maxLength={10}
+                    required
+                  />
+                </div>
+                <div className='container-inputs'>
+                  <label>Periodo de Contrato</label>
+                  <input
+                    name='vigencia'
+                    type="text"
+                    value={form.vigencia}
+                    onChange={handleChangeForm}
+                    required
+                  />
+                </div>
+                <ButtonOpacity
+                  click={handleSubmit}
+                  text={'Entregar Chaves'}
+                  atributeColor={'btn-red'}
+                  atributeSize={'btn-small'}
+                  atributeLarge={'btn-whidth-big'}
                 />
-              </div>
-              <div className='container-inputs'>
-                <label>E-mail</label>
-                <input
-                  name='email'
-                  type="email"
-                  value={form.email}
-                  onChange={handleChangeForm}
-                  required
-                />
-              </div>
-              <div className='container-inputs'>
-                <label>Telefone</label>
-                <input
-                  name='phone'
-                  type="text"
-                  value={formatPhone(form.phone)}
-                  onChange={handleChangeForm}
-                  required
-                />
-              </div>
-              <div className='container-inputs'>
-                <label>Data de Inicio</label>
-                <input
-                  name='date'
-                  type="text"
-                  value={formatToDate(form.date)}
-                  onChange={handleChangeForm}
-                  maxLength={10}
-                  required
-                />
-              </div>
-              <div className='container-inputs'>
-                <label>Periodo de Contrato</label>
-                <input
-                  name='vigencia'
-                  type="text"
-                  value={form.vigencia}
-                  onChange={handleChangeForm}
-                  required
-                />
-              </div>
-              <button className='btn-red btn-small'>
-                Entregar Chaves
-              </button>
-            </form>
-          </div>
+              </form>
+            </div>
+          </Zoom>
         </div>
       }
     </>

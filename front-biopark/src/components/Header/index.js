@@ -4,6 +4,7 @@ import Logo from '../../assets/logo-second-form.svg';
 import Logout from '../../assets/logout.svg';
 import { useNavigate } from 'react-router-dom';
 import { clear, getItem } from '../../utils/storage';
+import { Waves } from '@mui/icons-material';
 
 function Header({ handleEditProfile }) {
   const navigate = useNavigate();
@@ -15,9 +16,11 @@ function Header({ handleEditProfile }) {
   }
 
   return (
-    <header>
+    <header className='move'>
       <div className='width-limit content-header'>
-        <img src={Logo} alt="logo" />
+        <a href={'https://biopark.com.br/sobre/'}>
+          <img src={Logo} alt="logo" />
+        </a>
 
         <div className='container-sign-out'>
           <div

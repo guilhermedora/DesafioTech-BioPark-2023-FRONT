@@ -35,7 +35,7 @@
 }
 
 .modal button {
-  width: 250px;
+  width: 200px;
   margin-top: 42px;
 }
 
@@ -47,4 +47,8 @@
   height: 24px;
 
   cursor: pointer;
+}
+
+.close-button:hover {
+  transform: scale(1.1);
 }

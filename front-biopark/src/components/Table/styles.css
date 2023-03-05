@@ -42,16 +42,17 @@
 }
 
 .table-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
 
-  height: 56px;
-  border-bottom: 1px solid #E0E0E0;
-  margin-top: 8px;
-  padding: 0 24px;
+  height: 56px !important;
+  border-bottom: 1px solid #E0E0E0 !important;
+  margin-top: 8px !important;
+  padding: 0 24px !important;
 
-  position: relative;
+  position: relative !important;
+  color: black !important;
 }
 
 .content-number {
@@ -81,10 +82,29 @@
   font-family: 'Lato', sans-serif;
 }
 
+.img-key,
+.img-pen {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  width: 30px;
+}
+
 .positive-value {
   color: rgb(26, 58, 118);
+  font-weight: bold;
 }
 
 .negative-value {
   color: #f05959;
+  font-weight: bold;
+}
+
+.table-row:hover {
+  background-color: #efefef !important;
+}
+
+.img-key:hover,
+.img-pen:hover {
+  transform: scale(1.1);
 }

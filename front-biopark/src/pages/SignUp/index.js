@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import api from '../../services/api';
 import { useNavigate } from 'react-router-dom';
+import ButtonOpacity from '../../components/ButtonOpacity';
 
 const defaultForm = {
   name: '',
@@ -52,7 +53,6 @@ function SignUp() {
   }
 
   function handleChangeForm({ target }) {
-    console.log(target.value);
     setForm({ ...form, [target.name]: target.value });
   }
 
@@ -63,7 +63,10 @@ function SignUp() {
       <div className='content-sign-up'>
 
         <form onSubmit={handleSubmit}>
-          <img src={Logo} alt="logo" className='logo-cadastro' />
+          <a href='https://biopark.com.br/sobre/'>
+            <img src={Logo} alt="logo" className='logo-cadastro' />
+          </a>
+
           <div className='container-inputs'>
 
             <label htmlFor='name'>Nome</label>
@@ -121,11 +124,13 @@ function SignUp() {
             />
           </div>
 
-          <button
-            className='btn btn-red btn-big'
-          >
-            Cadastrar
-          </button>
+          <ButtonOpacity
+            click={handleSubmit}
+            text={'Cadastrar'}
+            atributeColor={'btn-red'}
+            atributeSize={'btn-big'}
+            atributeLarge={'btn-whidth-login'}
+          />
           <Link to="/">Já tem cadastro? Clique aqui!</Link>
         </form>
       </div>
