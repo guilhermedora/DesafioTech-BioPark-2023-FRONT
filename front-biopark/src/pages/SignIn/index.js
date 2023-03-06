@@ -59,13 +59,13 @@ function SignIn() {
       <div className='content-sign-in'>
         <div className='left'>
           <h1>
-            Controle seus <span>imóveis</span>
-            ou procure um lugar para morar.
+            Controle seus <span>imóveis </span>
+            ou procure um lugar para  <span>morar</span>.
           </h1>
           <h3>
             Não importa o seu lado da moeda fechamos o melhor negócio
-            para você! Com a BioHome você tem tudo num único lugar,
-            há um clique de distância. ;)
+            para você! Com a BioPark você tem tudo num único lugar,
+            há um clique de distância.  <span>;)</span>
           </h3>
           <ButtonOpacity
             click={() => navigate('/sign-up')}
