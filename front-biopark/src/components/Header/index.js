@@ -18,7 +18,7 @@ function Header({ handleEditProfile }) {
   return (
     <header className='move'>
       <div className='width-limit content-header'>
-        <a href={'https://biopark.com.br/sobre/'}>
+        <a href={'https://www.instagram.com/biopark_/'}>
           <img src={Logo} alt="logo" />
         </a>
 

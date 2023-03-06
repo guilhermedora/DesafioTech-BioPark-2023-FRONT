@@ -9,6 +9,7 @@ function Confirm({ open, handleClose, infoAp }) {
   const [locador, setLocador] = useState({
     email: ''
   })
+
   async function handleDeleteItem() {
     try {
       await api.post('/fechar-contrato',
@@ -22,28 +23,29 @@ function Confirm({ open, handleClose, infoAp }) {
           }
         }
       );
-
     } catch (error) {
+      console.log(error);
     } finally {
       handleClose();
       document.location.reload(true)
     }
   }
+
   function handleChangeMail({ target }) {
     setLocador({ ...locador, [target.name]: target.value });
   }
+
   return (
     <>
       {open &&
         <div className='container-confirm'>
           <div className='arrow-up'>
           </div>
-
           <span>Deseja Cancelar o contrato?</span>
           {yes &&
             <input
               className='confirm'
-              placeholder='E-mail do locador'
+              placeholder='Email do locatário'
               name='email'
               type="test"
               value={locador.email}

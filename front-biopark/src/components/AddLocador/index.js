@@ -7,45 +7,79 @@ import './styles.css';
 import { formatToDate, formatPhone } from '../../utils/formatters'
 import ButtonOpacity from '../ButtonOpacity';
 import Zoom from '@mui/material/Zoom';
+
 const defaultForm = {
-  name: '',
-  email: '',
-  phone: '',
-  date: '',
-  vigencia: ''
+  renter_name: '',
+  renter_email: '',
+  renter_phone: '',
+  date_start: '',
+  month_number: ''
 }
 
 function AddLocador({ open, handleClose, setApartments, apartmentClicked }) {
   const token = getItem('token');
-  // const [setBuildings] = useState([]);
+  const category = getItem('category');
+  const id = getItem('userId')
   const [form, setForm] = useState({ ...defaultForm })
 
   function handleChangeForm({ target }) {
     setForm({ ...form, [target.name]: target.value });
+    console.log(form);
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
+    let localApartmentClicked = Object.keys(apartmentClicked).map(
+      (info) => [info, apartmentClicked[info]]
+    )
+    localApartmentClicked.map((info) => {
+      if (info[0] === 'owner_id') {
+        info[1] = id
+      }
+    })
+    const objLocalAp = Object.fromEntries(localApartmentClicked)
     try {
-      await api.post('/contrato',
-        {
-          name: form.name,
-          email: form.email,
-          phone: form.phone,
-          date: form.date,
-          vigencia: form.vigencia,
-          ...apartmentClicked
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
+      if (category === "Locatário") {
+        await api.post('/open-contract',
+          {
+            name: form.renter_name,
+            email: form.renter_email,
+            renter_phone: form.renter_phone,
+            date_start: form.date_start,
+            month_number: form.month_number,
+            ...apartmentClicked
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
           }
-        }
-      );
+        );
+      } else {
+        console.log(form);
+        await api.post('/open-contract',
+          {
+            name: form.renter_name,
+            email: form.renter_email,
+            renter_phone: form.renter_phone,
+            date_start: form.date_start,
+            month_number: form.month_number,
+            owner_id: id,
+            ...objLocalAp
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
       handleClose();
       setForm({ ...defaultForm });
       document.location.reload(true)
-    } catch (error) {
     }
   }
   return (
@@ -62,14 +96,14 @@ function AddLocador({ open, handleClose, setApartments, apartmentClicked }) {
                 alt="close-button"
                 onClick={handleClose}
               />
-              <h2>Contrato de Aluguel</h2>
+              <h2>{category === 'Locatário' ? `Requerimento de Contrato` : `Contrato de Aluguel`}</h2>
               <form onSubmit={handleSubmit}>
                 <div className='container-inputs'>
                   <label>Nome</label>
                   <input
-                    name='name'
+                    name='renter_name'
                     type="text"
-                    value={form.name}
+                    value={form.renter_name}
                     onChange={handleChangeForm}
                     required
                   />
@@ -77,9 +111,9 @@ function AddLocador({ open, handleClose, setApartments, apartmentClicked }) {
                 <div className='container-inputs'>
                   <label>E-mail</label>
                   <input
-                    name='email'
+                    name='renter_email'
                     type="email"
-                    value={form.email}
+                    value={form.renter_email}
                     onChange={handleChangeForm}
                     required
                   />
@@ -87,9 +121,9 @@ function AddLocador({ open, handleClose, setApartments, apartmentClicked }) {
                 <div className='container-inputs'>
                   <label>Telefone</label>
                   <input
-                    name='phone'
+                    name='renter_phone'
                     type="text"
-                    value={formatPhone(form.phone)}
+                    value={formatPhone(form.renter_phone)}
                     onChange={handleChangeForm}
                     required
                   />
@@ -97,9 +131,9 @@ function AddLocador({ open, handleClose, setApartments, apartmentClicked }) {
                 <div className='container-inputs'>
                   <label>Data de Inicio</label>
                   <input
-                    name='date'
+                    name='date_start'
                     type="text"
-                    value={formatToDate(form.date)}
+                    value={formatToDate(form.date_start)}
                     onChange={handleChangeForm}
                     maxLength={10}
                     required
@@ -108,16 +142,16 @@ function AddLocador({ open, handleClose, setApartments, apartmentClicked }) {
                 <div className='container-inputs'>
                   <label>Periodo de Contrato</label>
                   <input
-                    name='vigencia'
+                    name='month_number'
                     type="text"
-                    value={form.vigencia}
+                    value={form.month_number}
                     onChange={handleChangeForm}
                     required
                   />
                 </div>
                 <ButtonOpacity
                   click={handleSubmit}
-                  text={'Entregar Chaves'}
+                  text={category === 'Locatário' ? `Encaminhar Requerimento` : `Entregar Chaves`}
                   atributeColor={'btn-red'}
                   atributeSize={'btn-small'}
                   atributeLarge={'btn-whidth-big'}

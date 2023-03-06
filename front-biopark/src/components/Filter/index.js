@@ -41,7 +41,7 @@ function Filter({ apartmentList, setApartments }) {
 
         buildings.forEach((building) => {
             if (building.checked) {
-                buildingsCheckedId.push(building.edificio_nome);
+                buildingsCheckedId.push(building.building_name);
             }
         });
 
@@ -51,7 +51,7 @@ function Filter({ apartmentList, setApartments }) {
         }
 
         const onlyFilteredApartments = localApartments.filter(
-            (apartment) => buildingsCheckedId.includes(apartment.edificio_nome)
+            (apartment) => buildingsCheckedId.includes(apartment.building_name)
         );
         setApartments([...onlyFilteredApartments]);
     }
@@ -62,7 +62,6 @@ function Filter({ apartmentList, setApartments }) {
             allBuildings.forEach(build => {
                 build.checked = false;
             });
-
             setBuildings([...allBuildings]);
         }
         if (open) {
@@ -81,7 +80,6 @@ function Filter({ apartmentList, setApartments }) {
                 <img src={FilterIcon} alt="filter" />
                 Filtrar
             </button>
-
             {open &&
                 <Grow
                     in={open}
@@ -90,20 +88,18 @@ function Filter({ apartmentList, setApartments }) {
                 >
                     <div className='filter-body'>
                         <strong>Edifícios</strong>
-
                         <div className='container-categories' onClick={() => setFiltering(true)}>
                             {buildings.map((build) => (
                                 <Chip
                                     key={build.id}
                                     checked={build.checked}
-                                    title={build.edificio_nome}
+                                    title={build.building_name}
                                     id={build.id}
                                     buildings={buildings}
                                     setBuildings={setBuildings}
                                 />
                             ))}
                         </div>
-
                         <div className='container-btns-filter'>
                             <button
                                 className='btn-white btn-extra-small'
@@ -125,7 +121,6 @@ function Filter({ apartmentList, setApartments }) {
                     </div>
                 </Grow>
             }
-
         </div>
     )
 }

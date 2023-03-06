@@ -8,16 +8,16 @@ import './styles.css';
 import Zoom from '@mui/material/Zoom';
 
 const defaultFormEdf = {
-  name: '',
+  building_name: '',
   address: '',
   description: '',
 }
 
 const defaultFormAp = {
-  floor: '',
-  number: '',
-  building: '',
-  value: '',
+  place_level: '',
+  apartment_number: '',
+  building_name: '',
+  value_rent: '',
   description: '',
   available: true,
 }
@@ -38,7 +38,7 @@ function AddCadasterModal({ open, handleClose, setApartments }) {
   }
 
   function handleChangeSelectAp({ target }) {
-    const currentBuilding = buildings.find((building) => building.edificio_nome === target.value);
+    const currentBuilding = buildings.find((building) => building.building_name === target.value);
     if (!currentBuilding) {
       return;
     }
@@ -49,10 +49,10 @@ function AddCadasterModal({ open, handleClose, setApartments }) {
     e.preventDefault();
     if (option === 'edf') {
       try {
-        await api.post('/propriedade',
+        await api.post('/register-property',
           {
             type: 'edf',
-            name: formEdf.name,
+            building_name: formEdf.building_name,
             address: formEdf.address,
             description: formEdf.description,
           },
@@ -70,13 +70,13 @@ function AddCadasterModal({ open, handleClose, setApartments }) {
       }
     } else if (option === 'ap') {
       try {
-        await api.post('/propriedade',
+        await api.post('/register-property',
           {
             type: 'ap',
-            floor: formAp.floor,
-            number: formAp.number,
-            building: formAp.building,
-            value: formAp.value,
+            place_level: formAp.place_level,
+            apartment_number: formAp.apartment_number,
+            building_name: formAp.building_name,
+            value_rent: formAp.value_rent,
             description: formAp.description,
             available: true,
           },
@@ -119,7 +119,6 @@ function AddCadasterModal({ open, handleClose, setApartments }) {
                 onClick={handleClose}
               />
               <h2>Adicionar Imóvel</h2>
-
               <div className='container-options'>
                 <ButtonOpacity
                   text={'Edificio'}
@@ -144,16 +143,13 @@ function AddCadasterModal({ open, handleClose, setApartments }) {
                   atributeLarge={'btn-whidth-med'}
                 />
               </div>
-
               {option === 'ap' && <>
                 <form onSubmit={handleSubmit}>
-
                   <div className='container-inputs'>
                     <label>Edifício</label>
-
                     <select
-                      name='building'
-                      value={formAp.building.name}
+                      name='building_name'
+                      value={formAp.building_name.name}
                       onChange={handleChangeSelectAp}
                       required
                     >
@@ -161,23 +157,21 @@ function AddCadasterModal({ open, handleClose, setApartments }) {
                       {buildings.map((build) => (
                         <option
                           key={build.id}
-                          value={build.edificio_nome}
+                          value={build.building_name}
                         >
-                          {build.edificio_nome}
+                          {build.building_name}
                         </option>
                       ))}
                     </select>
-
                   </div>
-
                   <div className='container-inputs-row'>
                     <div>
                       <label>Andar</label>
                       <input
                         className='inp-row'
-                        name='floor'
+                        name='place_level'
                         type="number"
-                        value={formAp.floor}
+                        value={formAp.place_level}
                         onChange={handleChangeFormAp}
                         required
                       />
@@ -186,22 +180,21 @@ function AddCadasterModal({ open, handleClose, setApartments }) {
                       <label>Número</label>
                       <input
                         className='inp-row'
-                        name='number'
+                        name='apartment_number'
                         type="number"
-                        value={formAp.number}
+                        value={formAp.apartment_number}
                         onChange={handleChangeFormAp}
 
                         required
                       />
                     </div>
                   </div>
-
                   <div className='container-inputs'>
                     <label>Valor</label>
                     <input
-                      name='value'
+                      name='value_rent'
                       type="number"
-                      value={formAp.value}
+                      value={formAp.value_rent}
                       onChange={handleChangeFormAp}
                       required
                     />
@@ -231,14 +224,13 @@ function AddCadasterModal({ open, handleClose, setApartments }) {
                   <div className='container-inputs'>
                     <label>Nome</label>
                     <input
-                      name='name'
+                      name='building_name'
                       type="text"
-                      value={formEdf.name}
+                      value={formEdf.building_name}
                       onChange={handleChangeFormEdf}
                       required
                     />
                   </div>
-
                   <div className='container-inputs'>
                     <label>Endereço</label>
                     <input

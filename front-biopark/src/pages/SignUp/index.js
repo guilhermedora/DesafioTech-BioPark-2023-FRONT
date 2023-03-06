@@ -15,38 +15,30 @@ const defaultForm = {
 }
 
 function SignUp() {
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const [form, setForm] = useState({ ...defaultForm });
 
   async function handleSubmit(e) {
     e.preventDefault();
-
     try {
-
-      if (!form.name || !form.email || !form.password || !form.confirmPassword) {
-        return;
-      }
-
-      if (form.password !== form.confirmPassword) {
-        return;
-      }
-
-      const response = await api.post('/usuario',
+      if (
+        !form.name ||
+        !form.email ||
+        !form.password ||
+        !form.confirmPassword
+      ) return
+      if (form.password !== form.confirmPassword) return
+      const response = await api.post('/signup',
         {
           email: form.email,
-          nome: form.name,
-          senha: form.password,
-          atributo: form.category
+          name: form.name,
+          password: form.password,
+          category: form.category
         }
       );
-
-      if (response.status > 204) {
-        return;
-      }
-
+      if (response.status > 204) return
       navigate('/');
-
     } catch (error) {
       console.log(error.response);
     }
@@ -58,17 +50,12 @@ function SignUp() {
 
   return (
     <div className='container-sign-up'>
-
-
       <div className='content-sign-up'>
-
         <form onSubmit={handleSubmit}>
-          <a href='https://biopark.com.br/sobre/'>
+          <a href='https://www.instagram.com/biopark_/'>
             <img src={Logo} alt="logo" className='logo-cadastro' />
           </a>
-
           <div className='container-inputs'>
-
             <label htmlFor='name'>Nome</label>
             <input
               type="text"
@@ -77,7 +64,6 @@ function SignUp() {
               onChange={handleChangeForm}
             />
           </div>
-
           <div className='container-inputs'>
             <label htmlFor='email'>E-mail</label>
             <input
@@ -87,10 +73,8 @@ function SignUp() {
               onChange={handleChangeForm}
             />
           </div>
-
           <div className='container-inputs'>
             <label>Categoria</label>
-
             <select
               name='category'
               value={form.category.name}
@@ -101,9 +85,7 @@ function SignUp() {
               <option>Locador</option>
               <option>Locatário</option>
             </select>
-
           </div>
-
           <div className='container-inputs'>
             <label htmlFor='password'>Senha</label>
             <input
@@ -113,9 +95,10 @@ function SignUp() {
               onChange={handleChangeForm}
             />
           </div>
-
           <div className='container-inputs'>
-            <label htmlFor='confirm-password'>Confirmação de senha</label>
+            <label htmlFor='confirm-password'>
+              Confirmação de senha
+            </label>
             <input
               type="password"
               name='confirmPassword'
@@ -123,7 +106,6 @@ function SignUp() {
               onChange={handleChangeForm}
             />
           </div>
-
           <ButtonOpacity
             click={handleSubmit}
             text={'Cadastrar'}
@@ -131,7 +113,9 @@ function SignUp() {
             atributeSize={'btn-big'}
             atributeLarge={'btn-whidth-login'}
           />
-          <Link to="/">Já tem cadastro? Clique aqui!</Link>
+          <Link to="/">
+            Já tem cadastro? Clique aqui!
+          </Link>
         </form>
       </div>
     </div >

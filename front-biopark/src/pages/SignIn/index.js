@@ -1,4 +1,4 @@
-import { useEffect, useState, Link } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../assets/logo-second-form.svg';
 import api from '../../services/api';
@@ -13,33 +13,23 @@ function SignIn() {
 
   useEffect(() => {
     const token = getItem('token');
-
-    if (token) {
-      navigate('/main');
-    }
-
+    if (token) navigate('/main')
   }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
-
     try {
-      if (!email || !password) {
-        return;
-      }
-      const response = await api.post('/login', {
+      if (!email || !password) return
+      const response = await api.post('/signin', {
         email,
-        senha: password
+        password,
       });
-
-      const { usuario, token } = response.data;
-
+      const { user, token } = response.data;
       setItem('token', token);
-      setItem('userId', usuario.id);
-      setItem('userName', usuario.nome);
-
+      setItem('userId', user.id);
+      setItem('userName', user.name);
+      setItem('category', user.category)
       navigate('/main');
-
     } catch (error) {
       console.log(error);
     }
@@ -47,21 +37,21 @@ function SignIn() {
 
   return (
     <div className='container-sign-in'>
-      <a href='https://biopark.com.br/sobre/'>
+      <a href='https://www.instagram.com/biopark_/'>
         <img src={Logo} alt="logo" className='logo' />
       </a>
 
       <div className='content-sign-in'>
         <div className='left'>
           <h1>
-            Controle seus <span>imóveis</span> ou procure um lugar para morar.
+            Controle seus <span>imóveis</span>
+            ou procure um lugar para morar.
           </h1>
-
           <h3>
-            Não importa o seu lado da moeda fechamos o melhor negócio para você! Com a BioHome
-            você tem tudo num único lugar, há um clique de distância. ;)
+            Não importa o seu lado da moeda fechamos o melhor negócio
+            para você! Com a BioHome você tem tudo num único lugar,
+            há um clique de distância. ;)
           </h3>
-
           <ButtonOpacity
             click={() => navigate('/sign-up')}
             text={'Cadastre-se'}
@@ -73,7 +63,6 @@ function SignIn() {
         <div className='right'>
           <form onSubmit={handleSubmit}>
             <h2>Login</h2>
-
             <div className='container-inputs'>
               <label htmlFor='email'>E-mail</label>
               <input
@@ -83,7 +72,6 @@ function SignIn() {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-
             <div className='container-inputs'>
               <label htmlFor='password'>Password</label>
               <input

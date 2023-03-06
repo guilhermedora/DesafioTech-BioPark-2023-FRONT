@@ -42,6 +42,7 @@
   flex-direction: column;
   width: 260px;
   margin-top: 57px;
+  align-items: center;
 }
 
 .container-right button {
