@@ -90,8 +90,8 @@ abrirá um pequeno popup questionando a sua escolha (**...vai que é miss click,
 
 Basta clicar na **porta** ao lado do seu nome escolhido e até a próxima. o/
 
-#Só pra finalizar, tentei deixar a experiência de leitura menos cansativa, já que você provavelmente vai revisar muitos readme`s e o de back por si só é mais pragmático#
+*Só pra finalizar, tentei deixar a experiência de leitura menos cansativa, já que você provavelmente vai revisar muitos readme`s e o de back por si só é mais pragmático.*
 
-Obrigado por chegar até aqui!!
+*Obrigado por chegar até aqui!!*
 
 ###### tags: `front-end` `React` `CSS` `desafio` `BioPark` `Trainee`
