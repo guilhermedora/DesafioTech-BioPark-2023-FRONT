@@ -1,37 +1,35 @@
 import { useEffect, useState } from 'react';
 import AddCadasterModal from '../../components/AddCadasterModal';
 import AddLocador from '../../components/AddLocador';
+import ButtonOpacity from '../../components/ButtonOpacity';
+import ContractRequire from '../../components/ContractRequire';
+import CopyContract from '../../components/CopyContract';
 import Filter from '../../components/Filter';
 import Header from '../../components/Header';
+import Resume from '../../components/Resume';
 import Table from '../../components/Table';
 import {
   loadApartments,
   loadContracts,
   requiredContracts
 } from '../../utils/requisitions';
-import ButtonOpacity from '../../components/ButtonOpacity';
-import './styles.css';
 import { getItem } from '../../utils/storage';
-import Resume from '../../components/Resume';
-import ContractRequire from '../../components/ContractRequire'
-import CopyContract from '../../components/CopyContract';
+import './styles.css';
 
 function Main() {
+
   const category = getItem('category')
-  const [setOpenModalProfile] = useState(false);
-  const [openContract, setOpenContract] = useState(false);
-  const [openModalAddCadaster, setOpenModalAddCadaster] = useState(false);
-  const [openModalLocador, setOpenModalLocador] = useState(false);
-  const [apartments, setApartments] = useState([]);
-  const [contracts, setContracts] = useState([]);
   const [require, setRequire] = useState([]);
+  const [setOpenModalProfile] = useState(false);
+  const [contracts, setContracts] = useState([]);
+  const [apartments, setApartments] = useState([]);
+  const [openContract, setOpenContract] = useState(false);
   const [apartmentClicked, setApartmentClicked] = useState({});
+  const [openModalLocador, setOpenModalLocador] = useState(false);
+  const [openModalAddCadaster, setOpenModalAddCadaster] = useState(false);
 
   useEffect(() => {
-    setApartments([])
-    setContracts([])
-    setRequire([])
-    if (apartments.length < 1) getAllApartments();
+    getAllApartments();
     getAllRequirements();
     getAllMyContracts();
   }, []);
@@ -41,16 +39,19 @@ function Main() {
     let allApartments = [...response]
     setApartments(allApartments);
   }
+
   async function getAllMyContracts() {
     const response = await loadContracts();
     let allContracts = [...response]
     setContracts(allContracts);
   }
+
   async function getAllRequirements() {
     const response = await requiredContracts();
-    let allRequirements = [...response]
-    console.log(allRequirements, '@@@');
-    setRequire(allRequirements);
+    if (response) {
+      let allRequirements = [...response]
+      setRequire(allRequirements);
+    }
   }
 
   return (
@@ -115,6 +116,7 @@ function Main() {
         handleClose={() => setOpenContract(false)}
         apartmentClicked={apartmentClicked}
       />
+
     </div>
   )
 }

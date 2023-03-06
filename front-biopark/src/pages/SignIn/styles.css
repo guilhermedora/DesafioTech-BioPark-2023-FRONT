@@ -1,17 +1,13 @@
 .container-sign-in {
-  /* background-image: url('../../assets/background.png'); */
   background-color: rgb(26, 58, 118);
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
   height: 100vh;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   position: relative;
-
   font-family: 'Rubik', sans-serif;
 }
 

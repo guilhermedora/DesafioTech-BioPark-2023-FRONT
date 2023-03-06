@@ -1,16 +1,15 @@
-import { useEffect, useState } from 'react';
-import CloseIcon from '../../assets/close-icon.svg';
-import api from '../../services/api';
-import { loadBuildings } from '../../utils/requisitions';
-import { getItem } from '../../utils/storage';
-import './styles.css';
-import { formatToDate, formatPhone } from '../../utils/formatters'
-import ButtonOpacity from '../ButtonOpacity';
 import Zoom from '@mui/material/Zoom';
+import CloseIcon from '../../assets/close-icon.svg';
+import './styles.css';
 
-function CopyContract({ open, handleClose, apartmentClicked }) {
+function CopyContract({
+  open,
+  handleClose,
+  apartmentClicked
+}) {
   return (
     <>
+
       {open &&
         <div className='backdrop'>
           <Zoom
@@ -44,6 +43,7 @@ function CopyContract({ open, handleClose, apartmentClicked }) {
         </div>
       }
     </>
+
   )
 }
 

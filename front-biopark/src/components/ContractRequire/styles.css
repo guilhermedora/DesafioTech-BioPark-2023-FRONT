@@ -1,11 +1,9 @@
 .container-resume {
   width: 270px !important;
   min-height: 196px !important;
-
   box-shadow: 0px 2px 11px rgba(0, 0, 0, 0.364) !important;
   border-radius: 10px !important;
   margin-top: 20px !important;
-
   padding: 24px 24px 32px 24px !important;
   font-family: 'Rubik', sans-serif !important;
 }
@@ -36,6 +34,11 @@
 
 .container-require {
   position: relative !important;
+
+  scroll-behavior: smooth !important;
+  max-height: 300px !important;
+  overflow-x: scroll !important;
+  overflow-x: hidden !important;
 }
 
 .btn-require {
@@ -43,11 +46,9 @@
   flex-direction: column !important;
   align-items: center !important;
   background-color: rgba(181, 181, 181, 0.262) !important;
-
   border-radius: 4px !important;
   margin-bottom: 5px !important;
   text-align: center !important;
-
   font-family: 'Rubik', sans-serif !important;
   text-transform: none !important;
   letter-spacing: normal !important;
@@ -55,4 +56,19 @@
 
 .btn-require:hover {
   transform: scale(1.01) !important;
+}
+
+.container-require::-webkit-scrollbar {
+  width: 10px;
+}
+
+.container-require::-webkit-scrollbar-track {
+  box-shadow: 0px 2px 11px rgb(0 0 0 / 10%);
+  background: linear-gradient(180.23deg, rgba(26, 58, 118, 0.459) 10.1%, #cc37374b 80.9%);
+  border-radius: 10px;
+}
+
+.container-require::-webkit-scrollbar-thumb {
+  background: #ffffff72;
+  border-radius: 40%;
 }

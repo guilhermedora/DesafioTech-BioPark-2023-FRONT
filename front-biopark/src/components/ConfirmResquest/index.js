@@ -2,9 +2,25 @@ import './styles.css';
 import api from '../../services/api'
 import { getItem } from '../../utils/storage';
 import CloseIcon from '../../assets/close-icon.svg'
+import Alert from '../../components/Alert';
+import { useState } from 'react';
+
 function ConfirmRequest({ open, handleClose, info }) {
   const token = getItem('token');
+  const [alert, setAlert] = useState(false)
+  const [alertMsg, setAlertMsg] = useState("")
+
   async function handleDeleteItem() {
+    if (
+      !info[0].renter_id ||
+      !info[0].renter_name ||
+      !info[0].renter_email ||
+      !info[0].renter_phone
+    ) {
+      setAlertMsg("Erro interno.")
+      msgAlert()
+      return
+    }
     try {
       await api.post('/close-requirement',
         {
@@ -30,12 +46,21 @@ function ConfirmRequest({ open, handleClose, info }) {
       );
     } catch (error) {
     } finally {
-      // handleClose();
-      // document.location.reload(true)
+      handleClose();
+      document.location.reload(true)
     }
   }
   async function handleSubmit() {
-    console.log(info[0]);
+    if (
+      !info[0].renter_id ||
+      !info[0].renter_name ||
+      !info[0].renter_email ||
+      !info[0].renter_phone
+    ) {
+      setAlertMsg("Erro interno.")
+      msgAlert()
+      return
+    }
     try {
       await api.post('/open-contract',
         {
@@ -61,12 +86,21 @@ function ConfirmRequest({ open, handleClose, info }) {
       );
       handleDeleteItem()
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
     } finally {
-      // handleClose();
-      // document.location.reload(true)
+      handleClose();
+      document.location.reload(true)
     }
   }
+
+  function msgAlert() {
+    setAlert(true)
+    setTimeout(() => {
+      setAlert(false)
+      clearTimeout()
+    }, 2000)
+  }
+
   return (
     <>
       {open &&
@@ -77,7 +111,7 @@ function ConfirmRequest({ open, handleClose, info }) {
             onClick={handleClose}
             src={CloseIcon}
           />
-          <span>Aceitar solicitacao?</span>
+          <span>Aceitar solicitação?</span>
           <div className='container-buttons'>
             <button
               className='btn-dialog btn-blue'
@@ -93,6 +127,13 @@ function ConfirmRequest({ open, handleClose, info }) {
             </button>
           </div>
         </div>
+      }
+      {
+        alert &&
+        <Alert
+          style={{ top: "20%" }}
+          msgAlert={alertMsg}
+        />
       }
     </>
   )

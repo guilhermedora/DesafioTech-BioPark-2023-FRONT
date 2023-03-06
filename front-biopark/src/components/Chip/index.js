@@ -1,6 +1,12 @@
 import './styles.css';
 
-function Chip({ id, title, checked, buildings, setBuildings }) {
+function Chip({
+  id,
+  title,
+  checked,
+  buildings,
+  setBuildings
+}) {
 
   function handleCheckBuilding() {
     const localBuildings = [...buildings];
@@ -20,9 +26,6 @@ function Chip({ id, title, checked, buildings, setBuildings }) {
       onClick={handleCheckBuilding}
     >
       {title}
-      {/* <h3>
-        {checked ? 'x' : '+'}
-      </h3> */}
     </button>
   )
 }

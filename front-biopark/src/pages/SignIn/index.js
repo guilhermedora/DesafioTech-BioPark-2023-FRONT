@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../assets/logo-second-form.svg';
+import Alert from '../../components/Alert';
+import ButtonOpacity from '../../components/ButtonOpacity';
 import api from '../../services/api';
 import { getItem, setItem } from '../../utils/storage';
 import './styles.css';
-import ButtonOpacity from '../../components/ButtonOpacity';
 
 function SignIn() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
+  const [alert, setAlert] = useState(false)
+  const [alertMsg, setAlertMsg] = useState("")
   const [password, setPassword] = useState('');
 
   useEffect(() => {
@@ -18,8 +21,12 @@ function SignIn() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!email || !password) {
+      setAlertMsg("Todos os campos são obrigatórios.")
+      msgAlert()
+      return
+    }
     try {
-      if (!email || !password) return
       const response = await api.post('/signin', {
         email,
         password,
@@ -31,8 +38,17 @@ function SignIn() {
       setItem('category', user.category)
       navigate('/main');
     } catch (error) {
-      console.log(error);
+      setAlertMsg(`${error.message}, try again.`)
+      msgAlert()
     }
+  }
+
+  function msgAlert() {
+    setAlert(true)
+    setTimeout(() => {
+      setAlert(false)
+      clearTimeout()
+    }, 2000)
   }
 
   return (
@@ -40,7 +56,6 @@ function SignIn() {
       <a href='https://www.instagram.com/biopark_/'>
         <img src={Logo} alt="logo" className='logo' />
       </a>
-
       <div className='content-sign-in'>
         <div className='left'>
           <h1>
@@ -55,8 +70,8 @@ function SignIn() {
           <ButtonOpacity
             click={() => navigate('/sign-up')}
             text={'Cadastre-se'}
-            atributeColor={'btn-red'}
             atributeSize={'btn-big'}
+            atributeColor={'btn-red'}
             atributeLarge={'btn-whidth-login'}
           />
         </div>
@@ -84,13 +99,20 @@ function SignIn() {
             <ButtonOpacity
               click={handleSubmit}
               text={'Entrar'}
-              atributeColor={'btn-red'}
               atributeSize={'btn-big'}
+              atributeColor={'btn-red'}
               atributeLarge={'btn-whidth-login'}
             />
           </form>
         </div>
       </div>
+      {
+        alert &&
+        <Alert
+          style={{ top: "20%" }}
+          msgAlert={alertMsg}
+        />
+      }
     </div>
   );
 }

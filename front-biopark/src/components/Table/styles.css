@@ -1,5 +1,4 @@
 .container-table {
-  /* min-height: 500px; */
   width: 100%;
   font-family: 'Lato', sans-serif;
   min-width: 800px;
@@ -11,11 +10,9 @@
   background: #FAFAFA;
   box-shadow: 0px 2px 11px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   padding: 0 24px;
   font-size: 16px;
 }
@@ -32,25 +29,30 @@
 
 .table-column-big {
   text-align: center;
-  width: 25%;
+  width: 35%;
 }
 
 .table-body {
   display: flex;
   flex-direction: column;
   width: 100%;
+
+  scroll-behavior: smooth;
+  min-height: 300px;
+  max-height: 400px;
+  overflow-x: scroll;
+  overflow-x: hidden;
 }
 
 .table-row {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-
-  height: 56px !important;
+  min-height: 56px !important;
+  flex-wrap: nowrap;
   border-bottom: 1px solid #E0E0E0 !important;
   margin-top: 8px !important;
   padding: 0 24px !important;
-
   position: relative !important;
   color: black !important;
 }
@@ -93,7 +95,7 @@
 
 .img-eye {
   position: absolute;
-  right: 65px;
+  right: 58px;
   top: 10px;
   width: 30px;
 }
@@ -117,4 +119,19 @@
 .img-file:hover,
 .img-eye:hover {
   transform: scale(1.1);
+}
+
+.table-body::-webkit-scrollbar {
+  width: 10px;
+}
+
+.table-body::-webkit-scrollbar-track {
+  box-shadow: 0px 2px 11px rgb(0 0 0 / 10%);
+  background: linear-gradient(180.23deg, rgba(26, 58, 118, 0.459) 10.1%, #cc37374b 80.9%);
+  border-radius: 10px;
+}
+
+.table-body::-webkit-scrollbar-thumb {
+  background: #ffffff72;
+  border-radius: 40%;
 }

@@ -1,11 +1,11 @@
+import Grow from '@mui/material/Grow';
 import { useEffect, useState } from 'react';
 import FilterIcon from '../../assets/filter-icon.svg';
-import { loadBuildings, loadApartments } from '../../utils/requisitions';
+import { loadApartments, loadBuildings } from '../../utils/requisitions';
 import Chip from '../Chip';
 import './styles.css';
-import Grow from '@mui/material/Grow';
 
-function Filter({ apartmentList, setApartments }) {
+function Filter({ setApartments }) {
     const [open, setOpen] = useState(false);
     const [buildings, setBuildings] = useState([]);
     const [filtering, setFiltering] = useState(false)
@@ -19,42 +19,6 @@ function Filter({ apartmentList, setApartments }) {
         });
         setFiltering(search)
     }, [buildings])
-
-    async function handleClearFilters() {
-        const localBuildings = [...buildings];
-
-        localBuildings.forEach(building => building.checked = false);
-
-        setBuildings([...localBuildings]);
-
-        const allApartments = await loadApartments();
-
-        setApartments([...allApartments]);
-        setFiltering(false)
-    }
-
-    async function handleApplyFilters() {
-        const localApartments = await loadApartments();
-        setApartments([...localApartments]);
-
-        const buildingsCheckedId = [];
-
-        buildings.forEach((building) => {
-            if (building.checked) {
-                buildingsCheckedId.push(building.building_name);
-            }
-        });
-
-        if (!buildingsCheckedId.length) {
-            setFiltering(false)
-            return;
-        }
-
-        const onlyFilteredApartments = localApartments.filter(
-            (apartment) => buildingsCheckedId.includes(apartment.building_name)
-        );
-        setApartments([...onlyFilteredApartments]);
-    }
 
     useEffect(() => {
         async function getAllBuildings() {
@@ -73,11 +37,43 @@ function Filter({ apartmentList, setApartments }) {
         }
     }, [open]);
 
-    return (
-        <div className='container-filter'>
+    async function handleClearFilters() {
+        const localBuildings = [...buildings];
+        localBuildings.forEach(building => building.checked = false);
+        setBuildings([...localBuildings]);
+        const allApartments = await loadApartments();
+        setApartments([...allApartments]);
+        setFiltering(false)
+    }
 
-            <button onClick={() => setOpen(!open)} className="btn-white btn-filter">
-                <img src={FilterIcon} alt="filter" />
+    async function handleApplyFilters() {
+        const localApartments = await loadApartments();
+        setApartments([...localApartments]);
+        const buildingsCheckedId = [];
+        buildings.forEach((building) => {
+            if (building.checked) {
+                buildingsCheckedId.push(building.building_name);
+            }
+        });
+        if (!buildingsCheckedId.length) {
+            setFiltering(false)
+            return;
+        }
+        const onlyFilteredApartments = localApartments.filter(
+            (apartment) => buildingsCheckedId.includes(apartment.building_name)
+        );
+        setApartments([...onlyFilteredApartments]);
+    }
+
+    return (
+
+        <div className='container-filter'>
+            <button
+                onClick={() => setOpen(!open)}
+                className="btn-white btn-filter"
+            >
+                <img src={FilterIcon} alt="filter"
+                />
                 Filtrar
             </button>
             {open &&
@@ -88,7 +84,10 @@ function Filter({ apartmentList, setApartments }) {
                 >
                     <div className='filter-body'>
                         <strong>Edifícios</strong>
-                        <div className='container-categories' onClick={() => setFiltering(true)}>
+                        <div
+                            className='container-categories'
+                            onClick={() => setFiltering(true)}
+                        >
                             {buildings.map((build) => (
                                 <Chip
                                     key={build.id}
@@ -122,6 +121,7 @@ function Filter({ apartmentList, setApartments }) {
                 </Grow>
             }
         </div>
+
     )
 }
 

@@ -5,6 +5,7 @@ import { useState } from 'react';
 import api from '../../services/api';
 import { useNavigate } from 'react-router-dom';
 import ButtonOpacity from '../../components/ButtonOpacity';
+import Alert from '../../components/Alert';
 
 const defaultForm = {
   name: '',
@@ -17,6 +18,8 @@ const defaultForm = {
 function SignUp() {
 
   const navigate = useNavigate();
+  const [alert, setAlert] = useState(false)
+  const [alertMsg, setAlertMsg] = useState("")
   const [form, setForm] = useState({ ...defaultForm });
 
   async function handleSubmit(e) {
@@ -26,10 +29,19 @@ function SignUp() {
         !form.name ||
         !form.email ||
         !form.password ||
-        !form.confirmPassword
-      ) return
-      if (form.password !== form.confirmPassword) return
-      const response = await api.post('/signup',
+        !form.confirmPassword ||
+        form.category === 'Selecione'
+      ) {
+        setAlertMsg("Todos os campos são obrigatórios")
+        msgAlert()
+        return
+      }
+      if (form.password !== form.confirmPassword) {
+        setAlertMsg("Senhas diferentes.")
+        msgAlert()
+        return
+      }
+      await api.post('/signup',
         {
           email: form.email,
           name: form.name,
@@ -37,15 +49,23 @@ function SignUp() {
           category: form.category
         }
       );
-      if (response.status > 204) return
       navigate('/');
     } catch (error) {
-      console.log(error.response);
+      setAlertMsg(`${error.message}, try again.`)
+      msgAlert()
     }
   }
 
   function handleChangeForm({ target }) {
     setForm({ ...form, [target.name]: target.value });
+  }
+
+  function msgAlert() {
+    setAlert(true)
+    setTimeout(() => {
+      setAlert(false)
+      clearTimeout()
+    }, 2000)
   }
 
   return (
@@ -102,15 +122,15 @@ function SignUp() {
             <input
               type="password"
               name='confirmPassword'
-              value={form.confirmPassword}
               onChange={handleChangeForm}
+              value={form.confirmPassword}
             />
           </div>
           <ButtonOpacity
             click={handleSubmit}
             text={'Cadastrar'}
-            atributeColor={'btn-red'}
             atributeSize={'btn-big'}
+            atributeColor={'btn-red'}
             atributeLarge={'btn-whidth-login'}
           />
           <Link to="/">
@@ -118,6 +138,13 @@ function SignUp() {
           </Link>
         </form>
       </div>
+      {
+        alert &&
+        <Alert
+          style={{ top: "20%" }}
+          msgAlert={alertMsg}
+        />
+      }
     </div >
   );
 }

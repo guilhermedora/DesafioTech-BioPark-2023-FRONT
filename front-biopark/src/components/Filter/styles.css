@@ -38,7 +38,6 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  /* height: 150px; */
   width: 100%;
   margin: 20px 0 16px 0;
 }
@@ -55,13 +54,11 @@
 }
 
 .btn-filter:hover {
-  /* opacity: 0.9; */
   transform: scale(1.01);
   box-shadow: 0px 2px 11px rgba(0, 0, 0, 0.4) !important;
 }
 
 .btn-filter:active {
-  /* opacity: 1; */
   transform: scale(0.99);
 }
 

@@ -1,11 +1,12 @@
+import Zoom from '@mui/material/Zoom';
 import { useEffect, useState } from 'react';
 import CloseIcon from '../../assets/close-icon.svg';
 import api from '../../services/api';
-import { loadBuildings, loadApartments } from '../../utils/requisitions';
+import { loadApartments, loadBuildings } from '../../utils/requisitions';
 import { getItem } from '../../utils/storage';
 import ButtonOpacity from '../ButtonOpacity';
 import './styles.css';
-import Zoom from '@mui/material/Zoom';
+import Alert from '../../components/Alert';
 
 const defaultFormEdf = {
   building_name: '',
@@ -23,11 +24,22 @@ const defaultFormAp = {
 }
 
 function AddCadasterModal({ open, handleClose, setApartments }) {
+
   const token = getItem('token');
-  const [option, setOption] = useState('edf');
+  const [alert, setAlert] = useState(false)
+  const [option, setOption] = useState('edf')
+  const [alertMsg, setAlertMsg] = useState("")
   const [buildings, setBuildings] = useState([]);
-  const [formEdf, setFormEdf] = useState({ ...defaultFormEdf })
   const [formAp, setFormAp] = useState({ ...defaultFormAp })
+  const [formEdf, setFormEdf] = useState({ ...defaultFormEdf })
+
+  useEffect(() => {
+    async function getBuildings() {
+      const allBuildings = await loadBuildings();
+      setBuildings([...allBuildings]);
+    }
+    getBuildings();
+  }, []);
 
   function handleChangeFormEdf({ target }) {
     setFormEdf({ ...formEdf, [target.name]: target.value });
@@ -38,18 +50,23 @@ function AddCadasterModal({ open, handleClose, setApartments }) {
   }
 
   function handleChangeSelectAp({ target }) {
-    const currentBuilding = buildings.find((building) => building.building_name === target.value);
-    if (!currentBuilding) {
-      return;
-    }
+    const currentBuilding = buildings.find(
+      (building) => building.building_name === target.value
+    );
+    if (!currentBuilding) { return }
     setFormAp({ ...formAp, [target.name]: target.value })
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
     if (option === 'edf') {
+      if (!formEdf.building_name || !formEdf.address) {
+        setAlertMsg("Preencha os campos obrigatórios.")
+        msgAlert()
+        return
+      }
       try {
-        await api.post('/register-property',
+        const response = await api.post('/register-property',
           {
             type: 'edf',
             building_name: formEdf.building_name,
@@ -62,15 +79,31 @@ function AddCadasterModal({ open, handleClose, setApartments }) {
             }
           }
         );
-        handleClose();
+        if (response.status > 204) {
+          setAlertMsg(`${response.error}, try again. 1`)
+          msgAlert()
+          return
+        }
         setFormEdf({ ...defaultFormEdf });
-        document.location.reload(true)
       } catch (error) {
-        console.log(error.response);
+        setAlertMsg(`${error.message}, try again.`)
+        msgAlert()
+      } finally {
+        handleClose();
+        document.location.reload(true)
       }
     } else if (option === 'ap') {
+      if (
+        !formAp.place_level ||
+        !formAp.apartment_number ||
+        !formAp.building_name
+      ) {
+        setAlertMsg("Preencha os campos obrigatórios.")
+        msgAlert()
+        return
+      }
       try {
-        await api.post('/register-property',
+        const response = await api.post('/register-property',
           {
             type: 'ap',
             place_level: formAp.place_level,
@@ -86,30 +119,44 @@ function AddCadasterModal({ open, handleClose, setApartments }) {
             }
           }
         );
-        handleClose();
-        setFormAp({ ...defaultFormAp });
+        if (response.status > 204) {
+          setAlertMsg(`${response.error}, try again. 2`)
+          msgAlert()
+          return
+        }
         const allApartments = await loadApartments();
+        if (response.status > 204) {
+          setAlertMsg(`${response.error}, try again. 3`)
+          msgAlert()
+          return
+        }
+        setFormAp({ ...defaultFormAp });
         setApartments([...allApartments]);
       } catch (error) {
-        console.log(error.response);
+        setAlertMsg(`${error.message}, try again.`)
+        msgAlert()
+      } finally {
+        handleClose();
+        document.location.reload(true)
       }
     }
   }
 
-  useEffect(() => {
-    async function getBuildings() {
-      const allBuildings = await loadBuildings();
-      setBuildings([...allBuildings]);
-    }
-    getBuildings();
-  }, []);
+  function msgAlert() {
+    setAlert(true)
+    setTimeout(() => {
+      setAlert(false)
+      clearTimeout()
+    }, 2000)
+  }
 
   return (
     <>
       {open &&
         <div className='backdrop'>
           <Zoom
-            in={open} style={{ transitionDelay: open ? '50ms' : '0ms' }}
+            in={open}
+            style={{ transitionDelay: open ? '50ms' : '0ms' }}
           >
             <div className='modal'>
               <img
@@ -143,125 +190,138 @@ function AddCadasterModal({ open, handleClose, setApartments }) {
                   atributeLarge={'btn-whidth-med'}
                 />
               </div>
-              {option === 'ap' && <>
-                <form onSubmit={handleSubmit}>
-                  <div className='container-inputs'>
-                    <label>Edifício</label>
-                    <select
-                      name='building_name'
-                      value={formAp.building_name.name}
-                      onChange={handleChangeSelectAp}
-                      required
-                    >
-                      <option>Selecione</option>
-                      {buildings.map((build) => (
-                        <option
-                          key={build.id}
-                          value={build.building_name}
-                        >
-                          {build.building_name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className='container-inputs-row'>
-                    <div>
-                      <label>Andar</label>
+              {
+                option === 'ap' &&
+                <>
+                  <form onSubmit={handleSubmit}>
+                    <div className='container-inputs'>
+                      <label>Edifício</label>
+                      <select
+                        name='building_name'
+                        onChange={handleChangeSelectAp}
+                        value={formAp.building_name.name}
+                        required
+                      >
+                        <option>Selecione</option>
+                        {
+                          buildings.map((build) => (
+                            <option
+                              key={build.id}
+                              value={build.building_name}
+                            >
+                              {build.building_name}
+                            </option>
+                          ))
+                        }
+                      </select>
+                    </div>
+                    <div className='container-inputs-row'>
+                      <div>
+                        <label>Andar</label>
+                        <input
+                          className='inp-row'
+                          name='place_level'
+                          type="number"
+                          value={formAp.place_level}
+                          onChange={handleChangeFormAp}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label>Número</label>
+                        <input
+                          className='inp-row'
+                          name='apartment_number'
+                          type="number"
+                          value={formAp.apartment_number}
+                          onChange={handleChangeFormAp}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className='container-inputs'>
+                      <label>Valor</label>
                       <input
-                        className='inp-row'
-                        name='place_level'
+                        name='value_rent'
                         type="number"
-                        value={formAp.place_level}
+                        value={formAp.value_rent}
                         onChange={handleChangeFormAp}
                         required
                       />
                     </div>
-                    <div>
-                      <label>Número</label>
+                    <div className='container-inputs'>
+                      <label>Descrição</label>
                       <input
-                        className='inp-row'
-                        name='apartment_number'
-                        type="number"
-                        value={formAp.apartment_number}
+                        name='description'
+                        type="text"
+                        value={formAp.description}
                         onChange={handleChangeFormAp}
-
                         required
                       />
                     </div>
-                  </div>
-                  <div className='container-inputs'>
-                    <label>Valor</label>
-                    <input
-                      name='value_rent'
-                      type="number"
-                      value={formAp.value_rent}
-                      onChange={handleChangeFormAp}
-                      required
+                    <ButtonOpacity
+                      click={handleSubmit}
+                      text={'Adicionar Apartamento'}
+                      atributeColor={'btn-red'}
+                      atributeSize={'btn-small'}
+                      atributeLarge={'btn-whidth-big'}
                     />
-                  </div>
-
-                  <div className='container-inputs'>
-                    <label>Descrição</label>
-                    <input
-                      name='description'
-                      type="text"
-                      value={formAp.description}
-                      onChange={handleChangeFormAp}
-                      required
+                  </form>
+                </>
+              }
+              {
+                option === 'edf' &&
+                <>
+                  <form onSubmit={handleSubmit}>
+                    <div className='container-inputs'>
+                      <label>Nome</label>
+                      <input
+                        name='building_name'
+                        type="text"
+                        value={formEdf.building_name}
+                        onChange={handleChangeFormEdf}
+                        required
+                      />
+                    </div>
+                    <div className='container-inputs'>
+                      <label>Endereço</label>
+                      <input
+                        name='address'
+                        type="text"
+                        value={formAp.address}
+                        onChange={handleChangeFormEdf}
+                        required
+                      />
+                    </div>
+                    <div className='container-inputs'>
+                      <label>Descrição</label>
+                      <input
+                        name='description'
+                        type="text"
+                        value={formEdf.description}
+                        onChange={handleChangeFormEdf}
+                        required
+                      />
+                    </div>
+                    <ButtonOpacity
+                      click={handleSubmit}
+                      text={'Adicionar Edifício'}
+                      atributeColor={'btn-blue'}
+                      atributeSize={'btn-small'}
+                      atributeLarge={'btn-whidth-big'}
                     />
-                  </div>
-                  <ButtonOpacity
-                    click={handleSubmit}
-                    text={'Adicionar Apartamento'}
-                    atributeColor={'btn-red'}
-                    atributeSize={'btn-small'}
-                    atributeLarge={'btn-whidth-big'}
-                  />
-                </form>
-              </>}
-              {option === 'edf' && <>
-                <form onSubmit={handleSubmit}>
-                  <div className='container-inputs'>
-                    <label>Nome</label>
-                    <input
-                      name='building_name'
-                      type="text"
-                      value={formEdf.building_name}
-                      onChange={handleChangeFormEdf}
-                      required
-                    />
-                  </div>
-                  <div className='container-inputs'>
-                    <label>Endereço</label>
-                    <input
-                      name='address'
-                      type="text"
-                      value={formAp.address}
-                      onChange={handleChangeFormEdf}
-                      required
-                    />
-                  </div>
-                  <div className='container-inputs'>
-                    <label>Descrição</label>
-                    <input
-                      name='description'
-                      type="text"
-                      value={formEdf.description}
-                      onChange={handleChangeFormEdf}
-                      required
-                    />
-                  </div>
-                  <ButtonOpacity
-                    click={handleSubmit}
-                    text={'Adicionar Edifício'}
-                    atributeColor={'btn-blue'}
-                    atributeSize={'btn-small'}
-                    atributeLarge={'btn-whidth-big'}
-                  />
-                </form>
-              </>}
+                  </form>
+                </>
+              }
             </div>
           </Zoom>
+          {
+            alert &&
+            <Alert
+              style={{ top: "20%" }}
+              msgAlert={alertMsg}
+            />
+          }
         </div>
       }
     </>

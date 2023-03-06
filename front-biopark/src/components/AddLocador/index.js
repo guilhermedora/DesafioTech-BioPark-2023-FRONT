@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import CloseIcon from '../../assets/close-icon.svg';
-import api from '../../services/api';
-import { loadBuildings } from '../../utils/requisitions';
-import { getItem } from '../../utils/storage';
-import './styles.css';
-import { formatToDate, formatPhone } from '../../utils/formatters'
-import ButtonOpacity from '../ButtonOpacity';
 import Zoom from '@mui/material/Zoom';
+import { useState } from 'react';
+import CloseIcon from '../../assets/close-icon.svg';
+import Alert from '../../components/Alert';
+import api from '../../services/api';
+import { formatPhone, formatToDate } from '../../utils/formatters';
+import { getItem } from '../../utils/storage';
+import ButtonOpacity from '../ButtonOpacity';
+import './styles.css';
 
 const defaultForm = {
   renter_name: '',
@@ -16,15 +16,20 @@ const defaultForm = {
   month_number: ''
 }
 
-function AddLocador({ open, handleClose, setApartments, apartmentClicked }) {
+function AddLocador({
+  open,
+  handleClose,
+  apartmentClicked
+}) {
+  const id = getItem('userId')
   const token = getItem('token');
   const category = getItem('category');
-  const id = getItem('userId')
+  const [alert, setAlert] = useState(false)
+  const [alertMsg, setAlertMsg] = useState("")
   const [form, setForm] = useState({ ...defaultForm })
 
   function handleChangeForm({ target }) {
     setForm({ ...form, [target.name]: target.value });
-    console.log(form);
   }
 
   async function handleSubmit(e) {
@@ -38,9 +43,20 @@ function AddLocador({ open, handleClose, setApartments, apartmentClicked }) {
       }
     })
     const objLocalAp = Object.fromEntries(localApartmentClicked)
+    if (
+      !form.renter_name ||
+      !form.renter_email ||
+      !form.renter_phone ||
+      !form.date_start ||
+      !form.month_number
+    ) {
+      setAlertMsg("Preencha os campos obrigatórios.")
+      msgAlert()
+      return
+    }
     try {
       if (category === "Locatário") {
-        await api.post('/open-contract',
+        const response = await api.post('/open-contract',
           {
             name: form.renter_name,
             email: form.renter_email,
@@ -55,9 +71,14 @@ function AddLocador({ open, handleClose, setApartments, apartmentClicked }) {
             }
           }
         );
+        if (response.status > 204) {
+          setAlertMsg(`${response.error}, try again. 4`)
+          msgAlert()
+          return
+        }
+        setForm({ ...defaultForm });
       } else {
-        console.log(form);
-        await api.post('/open-contract',
+        const response = await api.post('/open-contract',
           {
             name: form.renter_name,
             email: form.renter_email,
@@ -73,21 +94,40 @@ function AddLocador({ open, handleClose, setApartments, apartmentClicked }) {
             }
           }
         );
+        if (response.status > 204) {
+          setAlertMsg(`${response.error}, try again. 5`)
+          msgAlert()
+          return
+        }
+        setForm({ ...defaultForm });
       }
     } catch (error) {
-      console.log(error);
+      setAlertMsg(`${error.message}, try again.`)
+      msgAlert()
     } finally {
       handleClose();
-      setForm({ ...defaultForm });
       document.location.reload(true)
     }
   }
+
+  function msgAlert() {
+    setAlert(true)
+    setTimeout(() => {
+      setAlert(false)
+      clearTimeout()
+    }, 2000)
+  }
+
   return (
     <>
       {open &&
         <div className='backdrop'>
           <Zoom
-            in={open} style={{ transitionDelay: open ? '50ms' : '0ms' }}
+            in={open} style={{
+              transitionDelay: open
+                ? '50ms'
+                : '0ms'
+            }}
           >
             <div className='modal'>
               <img
@@ -96,7 +136,11 @@ function AddLocador({ open, handleClose, setApartments, apartmentClicked }) {
                 alt="close-button"
                 onClick={handleClose}
               />
-              <h2>{category === 'Locatário' ? `Requerimento de Contrato` : `Contrato de Aluguel`}</h2>
+              <h2>{
+                category === 'Locatário'
+                  ? `Requerimento de Contrato`
+                  : `Contrato de Aluguel`
+              }</h2>
               <form onSubmit={handleSubmit}>
                 <div className='container-inputs'>
                   <label>Nome</label>
@@ -151,7 +195,11 @@ function AddLocador({ open, handleClose, setApartments, apartmentClicked }) {
                 </div>
                 <ButtonOpacity
                   click={handleSubmit}
-                  text={category === 'Locatário' ? `Encaminhar Requerimento` : `Entregar Chaves`}
+                  text={
+                    category === 'Locatário'
+                      ? `Encaminhar Requerimento`
+                      : `Entregar Chaves`
+                  }
                   atributeColor={'btn-red'}
                   atributeSize={'btn-small'}
                   atributeLarge={'btn-whidth-big'}
@@ -159,6 +207,13 @@ function AddLocador({ open, handleClose, setApartments, apartmentClicked }) {
               </form>
             </div>
           </Zoom>
+          {
+            alert &&
+            <Alert
+              style={{ top: "20%" }}
+              msgAlert={alertMsg}
+            />
+          }
         </div>
       }
     </>

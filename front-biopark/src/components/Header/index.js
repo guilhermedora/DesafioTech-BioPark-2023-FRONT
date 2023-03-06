@@ -1,10 +1,9 @@
-import './styles.css';
-import Profile from '../../assets/profile.svg';
+import { useNavigate } from 'react-router-dom';
 import Logo from '../../assets/logo-second-form.svg';
 import Logout from '../../assets/logout.svg';
-import { useNavigate } from 'react-router-dom';
+import Profile from '../../assets/profile.svg';
 import { clear, getItem } from '../../utils/storage';
-import { Waves } from '@mui/icons-material';
+import './styles.css';
 
 function Header({ handleEditProfile }) {
   const navigate = useNavigate();
@@ -16,6 +15,7 @@ function Header({ handleEditProfile }) {
   }
 
   return (
+
     <header className='move'>
       <div className='width-limit content-header'>
         <a href={'https://www.instagram.com/biopark_/'}>
@@ -39,6 +39,7 @@ function Header({ handleEditProfile }) {
         </div>
       </div>
     </header>
+
   )
 }
 
